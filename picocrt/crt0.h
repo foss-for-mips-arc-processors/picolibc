@@ -105,7 +105,8 @@ __start(void)
 {
 #ifndef NO_FLASH
     /* Initialize .data from FLASH when enabled */
-    memcpy(__data_start, __data_source, (uintptr_t)__data_size);
+    if (&__data_start[0] != &__data_source[0])
+        memcpy(__data_start, __data_source, (uintptr_t)__data_size);
 #endif
 #ifndef CRT0_LINUX
     memset(__bss_start, '\0', (uintptr_t)__bss_size);
