@@ -51,3 +51,7 @@ endif
 subdir('fallback')
 
 subdir('dummyhost')
+
+if host_cpu_family == 'arc'
+  subdir('arc-boards')
+endif
