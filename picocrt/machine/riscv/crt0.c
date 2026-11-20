@@ -70,7 +70,7 @@ _cstart(void)
     __start();
 }
 
-#ifdef CRT0_SEMIHOST
+#if defined(CRT0_SEMIHOST) && !defined(CRT0_SEMIHOST_NOTRAP)
 #include <semihost.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -345,7 +345,7 @@ _start(void)
             "or	t0, t0, t1\n"
             "csrw	senvcfg, t0");
 #endif
-#ifdef CRT0_SEMIHOST
+#if defined(CRT0_SEMIHOST) && !defined(CRT0_SEMIHOST_NOTRAP)
 #ifdef __riscv_cmodel_large
     __asm__("ld     t0,.start_trap");
 #else
@@ -368,7 +368,7 @@ _start(void)
     __asm__(".align 3\n"
             ".start_sp: .dword __stack\n"
             ".start_gp: .dword __global_pointer$\n"
-#ifdef CRT0_SEMIHOST
+#if defined(CRT0_SEMIHOST) && !defined(CRT0_SEMIHOST_NOTRAP)
             ".start_trap: .dword _trap\n"
 #endif
 #if defined(__riscv_zcmt) || defined(__riscv_xqccmt)

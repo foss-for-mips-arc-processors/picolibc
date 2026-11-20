@@ -171,6 +171,20 @@ if host_cpu_family == 'riscv'
     'c_args': ['-DCRT0_EXIT', '-DCRT0_SEMIHOST'],
     'src': src_picocrt_riscv_cfi,
   }
+  # Semihosting crt0 variants without initialization of traps and
+  # without using of CSRs.
+  picocrt_variants += {
+    'name': 'semihost-notrap',
+    'suffix': '-semihost-notrap',
+    'c_args': ['-DCRT0_EXIT', '-DCRT0_SEMIHOST', '-DCRT0_SEMIHOST_NOTRAP'],
+    'src': src_picocrt,
+  }
+  picocrt_variants += {
+    'name': 'noflash-semihost-notrap',
+    'suffix': '-noflash-semihost-notrap',
+    'c_args': ['-DINIT_TLS', '-DNO_FLASH', '-DCRT0_EXIT', '-DCRT0_SEMIHOST', '-DCRT0_SEMIHOST_NOTRAP'],
+    'src': src_picocrt,
+  }
 endif
 
 foreach params : targets
