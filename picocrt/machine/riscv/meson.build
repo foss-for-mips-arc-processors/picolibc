@@ -37,3 +37,11 @@ src_picocrt += files('crt0.c')
 # Sources for the optional `semihost-cfi' crt0 variant: standard riscv crt0
 # plus the MMU-based Zicfiss shadow-stack initialiser.
 src_picocrt_riscv_cfi = src_picocrt + files('cfiss-mmu.S')
+
+picocrt_vendor_inits += [
+  {
+    'name': 'arcv',
+    'src': files('vendor-init-arcv.c'),
+    'c_args': [],
+  },
+]

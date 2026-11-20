@@ -64,9 +64,17 @@ _init_cfiss(void)
 }
 #endif
 
+extern void __picocrt_vendor_init(void);
+
+__attribute__((weak)) void
+__picocrt_vendor_init(void)
+{
+}
+
 static void __used __section(".init")
 _cstart(void)
 {
+    __picocrt_vendor_init();
     __start();
 }
 

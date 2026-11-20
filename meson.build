@@ -2186,6 +2186,7 @@ if system_libc
   specs_libgccpath = ''
   # The '%s' here asks gcc to search for this file in the 'usual' library path
   specs_startfile = '%{-crt0=*:crt0-%*%O%s; :@0@%O%s}'.format(crt0_default)
+  specs_vendor_init = '%{-vendor-init=*:vendor-init-%*%O%s}'
 else
 
   # Note that this value does *not* include the trailing %s which
@@ -2297,6 +2298,17 @@ else
   gen_crt0_path = specs_prefix_format.format(get_option('libdir') / crt0_expr)
   crt0_gen = gen_format.format(gen_crt0_path)
 
+  vendor_init_expr = '%{-vendor-init=*:vendor-init-%*%O}'
+
+  prefix_vendor_init_path = '%*/@0@'.format(get_option('libdir')) / vendor_init_expr
+  vendor_init_prefix = picolibc_prefix_format.format(prefix_vendor_init_path)
+
+  buildtype_vendor_init_path = specs_prefix_format.format(get_option('libdir') / '%*' / vendor_init_expr)
+  vendor_init_buildtype = picolibc_buildtype_format.format(buildtype_vendor_init_path)
+
+  gen_vendor_init_path = specs_prefix_format.format(get_option('libdir') / vendor_init_expr)
+  vendor_init_gen = gen_format.format(gen_vendor_init_path)
+
   #
   # Now build multilib versions of the -L and *startfile values
   #
@@ -2347,6 +2359,15 @@ else
 
     gen_multilib_crt0_path = specs_prefix_format.format(get_option('libdir') / '%M' / crt0_expr)
     crt0_gen = gen_format.format(gen_multilib_crt0_path)
+
+    prefix_multilib_vendor_init_path = '%*/@0@'.format(get_option('libdir')) / '%M' / vendor_init_expr
+    vendor_init_prefix = picolibc_prefix_format.format(prefix_multilib_vendor_init_path)
+
+    buildtype_multilib_vendor_init_path = specs_prefix_format.format(get_option('libdir') / '%*/%M' / vendor_init_expr)
+    vendor_init_buildtype = picolibc_buildtype_format.format(buildtype_multilib_vendor_init_path)
+
+    gen_multilib_vendor_init_path = specs_prefix_format.format(get_option('libdir') / '%M' / vendor_init_expr)
+    vendor_init_gen = gen_format.format(gen_multilib_vendor_init_path)
   endif
 
   #
@@ -2355,6 +2376,10 @@ else
   # multilib path or the non-multilib path
   #
   specs_startfile = specs_option_format.format(crt0_prefix, crt0_buildtype, crt0_gen)
+
+  # Vendor init option does not have a default value. Thus
+  # it must be guarded.
+  specs_vendor_init = '%{-vendor-init=*:' + specs_option_format.format(vendor_init_prefix, vendor_init_buildtype, vendor_init_gen) + '}'
 
 endif
 
@@ -2373,6 +2398,7 @@ specs_data.set('SPECS_ISYSTEM', specs_isystem)
 specs_data.set('SPECS_LIBGCC_PATH', specs_libgccpath)
 specs_data.set('SPECS_LIBPATH', specs_libpath)
 specs_data.set('SPECS_STARTFILE', specs_startfile)
+specs_data.set('SPECS_VENDOR_INIT', specs_vendor_init)
 specs_data.set('TLSMODEL', tls_model_spec)
 specs_data.set('STACKGUARD', stack_guard_spec)
 specs_data.set('LINK_SPEC', meson.get_external_property('link_spec', ''))

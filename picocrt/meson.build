@@ -36,6 +36,8 @@
 src_picocrt = []
 src_picocrt_none = files('crt0-none.c')
 
+picocrt_vendor_inits = []
+
 # Machine-specific crt0 variants to build.
 picocrt_machines = [
   {
@@ -261,5 +263,38 @@ foreach params : targets
         endif
       endif
     endforeach
+  endforeach
+
+  # Vendor init objects, linked with --vendor-init=<name>. These are
+  # installed as plain object files so the strong __picocrt_vendor_init
+  # definition is always linked in.
+  foreach vendor_init : picocrt_vendor_inits
+    vendor_init_obj_name = 'vendor-init-' + vendor_init['name'] + '.o'
+
+    _src = vendor_init['src']
+    _c_args = target_c_args + arg_fnobuiltin + ['-ffreestanding'] + vendor_init['c_args']
+    _link_args = target_c_args + ['-r', '-ffreestanding'] + global_link_args
+
+    if meson.version().version_compare('>=1.10')
+      _vendor_init = executable(vendor_init_obj_name,
+                                _src,
+                                build_subdir : target_dir,
+                                include_directories : inc,
+                                install : really_install,
+                                install_dir : instdir,
+                                c_args : _c_args,
+                                link_args : _link_args)
+    else
+      _vendor_init = executable(join_paths(target_dir, vendor_init_obj_name),
+                                _src,
+                                include_directories : inc,
+                                install : really_install,
+                                install_dir : instdir,
+                                c_args : _c_args,
+                                link_args : _link_args)
+    endif
+
+    set_variable('vendor_init_' + vendor_init['name'].underscorify() + target,
+                 _vendor_init.extract_objects(_src))
   endforeach
 endforeach

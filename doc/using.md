@@ -210,3 +210,17 @@ add lines like this any place within the read-only data sections:
 
 The last few symbols are for specific architectures, so you only need
 add those relevant to your project.
+
+## Vendor initialization
+
+On RISC-V, vendor-specific early initialization (for example enabling
+caches) can be linked in without using a separate `crt0` variant. The
+RISC-V `crt0` calls a weak function named `__picocrt_vendor_init()`.
+Vendor specific object files are installed as `vendor-init-<name>.o`
+which provide a strong definition of `__picocrt_vendor_init()`.
+Select one with the `--vendor-init=<name>` flag:
+
+	$ gcc --specs=picolibc.specs --vendor-init=arcv -o program.elf program.o
+
+Only one `--vendor-init` option may be used at a time. Vendor
+initialization is not available on other architectures yet.
