@@ -15,8 +15,11 @@
 *link:
 @SPECS_PRINTF@ @SPECS_LIBPATH@ @LINK_SPEC@ %(picolibc_link)
 
-*lib:
+*link_gcc_c_sequence:
 --start-group %(libgcc) @ADDITIONAL_LIBS@ -lc %{-oslib=*:-l%*} --end-group
+
+*lib:
+
 
 *endfile:
 @CRTEND@
