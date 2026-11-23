@@ -187,6 +187,13 @@ if host_cpu_family == 'riscv'
     'c_args': ['-DINIT_TLS', '-DNO_FLASH', '-DCRT0_EXIT', '-DCRT0_SEMIHOST', '-DCRT0_SEMIHOST_NOTRAP'],
     'src': src_picocrt,
   }
+  # Compatibility crt0 for ARC-V targets. It will be removed later.
+  picocrt_variants += {
+    'name': 'arcv-semihost',
+    'suffix': '-arcv-semihost',
+    'c_args': ['-DCRT0_EXIT', '-DCRT0_SEMIHOST', '-DCRT0_SEMIHOST_NOTRAP'],
+    'src': src_picocrt,
+  }
 endif
 
 foreach params : targets
