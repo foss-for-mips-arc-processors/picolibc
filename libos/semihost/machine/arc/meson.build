@@ -63,3 +63,20 @@ src_semihost += files([
   src_semihost_fake_statvfs,
   src_semihost_fake_times,
   ]
+
+# ARC EM mini configurations have a restricted register file (RF16)
+# which is not supported by the semihosting interface for ARC Classic.
+# Use fake implementations only for such targets.
+arc_rf16_code = '''
+#ifndef __ARC_RF16__
+#error __ARC_RF16__ is not defined
+#endif
+'''
+
+foreach params : targets
+  if cc.compiles(arc_rf16_code,
+                 name : 'ARC RF16 for target "@0@"'.format(params['name']),
+                 args : params['c_args'] + c_args)
+    set_variable('src_semihost_' + params['name'], src_semihost_fake)
+  endif
+endforeach
