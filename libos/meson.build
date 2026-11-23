@@ -55,3 +55,7 @@ subdir('dummyhost')
 if host_cpu_family == 'arc'
   subdir('arc-boards')
 endif
+
+if host_cpu_family in ['arc', 'arc64']
+  subdir('arc-hostlink')
+endif
