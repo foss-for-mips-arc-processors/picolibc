@@ -265,6 +265,17 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #if defined(__riscv_flen) || defined(__riscv_zfinx)
 #define _SUPPORTS_ERREXCEPT
 #endif
+/*
+ * The new math code assumes double arithmetic is about as fast as
+ * float arithmetic, and the new float functions compute internally in
+ * double. Use it only when double is in hardware (D or Zdinx); without
+ * that, the old code is smaller for both float and double functions.
+ */
+#if (defined(__riscv_flen) && __riscv_flen >= 64) || defined(__riscv_zdinx)
+#define __OBSOLETE_MATH_DEFAULT 0
+#else
+#define __OBSOLETE_MATH_DEFAULT 1
+#endif
 #endif
 
 #ifdef __powerpc__
